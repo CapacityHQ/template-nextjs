@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "apps": [
+    {
+      "id": "app",
+      "name": "App",
+      "primary": true,
+      "cwd": ".",
+      "command": "pnpm dev"
+    }
+  ],
+  "services": []
+}
