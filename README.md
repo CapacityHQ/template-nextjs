@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# App
 
-## Getting Started
+A pnpm workspace. Every package lives under `packages/`:
 
-First, run the development server:
+| Package              | What it is                                   | Runs with  |
+| -------------------- | -------------------------------------------- | ---------- |
+| `packages/frontend`  | Next.js 16 app (App Router, Tailwind, shadcn) | `pnpm dev` |
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
+pnpm dev        # starts the frontend on http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The root scripts delegate to the packages:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Script            | Does                                          |
+| ----------------- | --------------------------------------------- |
+| `pnpm dev`        | `dev` in `packages/frontend`                  |
+| `pnpm build`      | `build` in every package                      |
+| `pnpm lint`       | `lint` in every package                       |
+| `pnpm type-check` | `type-check` in every package                 |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Run a script in one package with `pnpm --filter <package-name> <script>`, for
+example `pnpm --filter frontend lint`.
 
-## Learn More
+## Adding a package
 
-To learn more about Next.js, take a look at the following resources:
+1. Create `packages/<name>/package.json` with a unique `name` and its own
+   `dev`, `build`, `lint` and `type-check` scripts (leave out the ones that do
+   not apply).
+2. Run `pnpm install` from the root so the lockfile picks it up.
+3. Register it in `.capacity/runtime.json` when it is a long-running process
+   (an API server, a worker) so it starts with the app.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Packages depend on each other with the workspace protocol:
+`"shared": "workspace:*"` in a package's `dependencies`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Layout
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+.
+├── .capacity/runtime.json   # which apps and services Capacity starts
+├── package.json             # workspace root: pnpm pin, Node floor, scripts
+├── pnpm-workspace.yaml      # package globs
+└── packages/
+    └── frontend/            # the Next.js app
+        ├── src/app/         # routes (App Router)
+        ├── src/components/  # UI components (shadcn under ui/)
+        ├── src/lib/         # helpers
+        └── public/          # static files
+```

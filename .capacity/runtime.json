@@ -2,12 +2,13 @@
   "version": 1,
   "apps": [
     {
-      "id": "app",
-      "name": "App",
+      "id": "frontend",
+      "name": "Frontend",
       "primary": true,
-      "cwd": ".",
+      "cwd": "packages/frontend",
       "command": "pnpm dev"
     }
   ],
-  "services": []
+  "services": [],
+  "envRoots": ["packages/frontend"]
 }

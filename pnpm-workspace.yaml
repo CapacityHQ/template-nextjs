@@ -1,0 +1,10 @@
+# Every folder under packages/ is a workspace package. Add a backend, a mobile
+# app or a desktop app as a sibling of packages/frontend and pnpm picks it up.
+packages:
+  - "packages/*"
+
+# pnpm 10 blocks dependency install scripts by default. These two are safe to
+# skip: sharp falls back to its prebuilt binary, unrs-resolver to pure JS.
+ignoredBuiltDependencies:
+  - sharp
+  - unrs-resolver
